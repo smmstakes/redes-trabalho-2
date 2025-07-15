@@ -14,14 +14,12 @@ Contém 4 sub-redes para os hosts, com as seguintes quantidades de hosts:
 
 Contém 6 sub-redes para as conexões entre os roteadores e as sub-redes de hosts.
 
-- Conexão c1 $\leftrightarrow$ a1
-- Conexão c1 $\leftrightarrow$ a2
-- Conexão a1 $\leftrightarrow$ e1
-- Conexão a1 $\leftrightarrow$ e2
-
-- Conexão a2 $\leftrightarrow$ e3
-- Conexão a2 $\leftrightarrow$ e4
--
+- Conexão c1 ↔ a1
+- Conexão c1 ↔ a2
+- Conexão a1 ↔ e1
+- Conexão a1 ↔ e2
+- Conexão a2 ↔ e3
+- Conexão a2 ↔ e4
 
 ## Cálculo de VLSM
 
@@ -33,22 +31,22 @@ A quantidade de bits para cada sub-rede deve superar sua quantidade de hosts, as
 
 - Redes com 30 hosts (e1, e2)
   $$
-  2^5 - 2 \geq 30 \Rightarrow  32 -2 \geq 30 \Rightarrow 30 \geq 30
+  2^5 - 2 ≥ 30 →  32 -2 ≥ 30 → 30 ≥ 30
   $$
   - Dos 32 bits de IP da rede 5 estão alocados para essa sub-rede, assim a máscara (CIDR) é $32 - 5 = 27$, portanto **\27**
 - Redes com 20 hosts (e3, e4)
 
   $$
-   2^5 - 2 \geq 20 \Rightarrow  32 -2 \geq 20 \Rightarrow 30 \geq 20
+   2^5 - 2 ≥ 20 →  32 -2 ≥ 20 → 30 ≥ 20
   $$
 
-      - CIDR: $32 - 5 = 27$, portanto **\27**
+  - CIDR: $32 - 5 = 27$, portanto **\27**
 
 - Roteadores
   $$
-  2^2 - 2 \geq 2 \Rightarrow 4 - 2 \geq 2 \Rightarrow 2\geq 2
+  2^2 - 2 ≥ 2 → 4 - 2 ≥ 2 → 2≥ 2
   $$
-      - CIDR: $32 - 2 = 30$, portanto **/30**
+  - CIDR: $32 - 2 = 30$, portanto **/30**
 
 ### Alocando as sub-redes
 
@@ -80,6 +78,7 @@ Para as redes com 4 endereços, continuando do ultimo endereço disponível que 
 - **Link a2-e4:** `192.168.0.148 /30`
   - 192.168.0.149 -192.168.0.150
 
+
 | Uso da Sub-rede           | Endereço de Rede | Máscara | Faixa de IPs Úteis           | Endereço de Broadcast |
 | ------------------------- | ---------------- | ------- | ---------------------------- | --------------------- |
 | **Rede para Hosts de e1** | 192.168.0.0      | /27     | 192.168.0.1 - 192.168.0.30   | 192.168.0.31          |
@@ -93,35 +92,6 @@ Para as redes com 4 endereços, continuando do ultimo endereço disponível que 
 | **Enlace a2-e3**          | 192.168.0.144    | /30     | .145, .146                   | 147                   |
 | **Enlace a2-e4**          | 192.168.0.148    | /30     | .149, .150                   | 151                   |
 
----
-
-## Dúvidas sobre os Roteadores
-
-### Trocar Roteadores de Edge (e1-e4) por Switches?
-
-1. **Função do Roteador:** Um roteador é usado para **conectar redes diferentes**. O seu dispositivo `e1`, por exemplo, precisa conectar duas redes distintas:
-   - A rede dos hosts (ex: `192.168.0.0/27`).
-   - A rede do enlace com o roteador de agregação a1 (ex: 192.168.0.136/30).
-     Apenas um roteador (ou um Switch de Camada 3, que é mais complexo) pode fazer isso, pois ele opera com endereços IP e toma decisões de roteamento. Um switch comum não consegue.
-2. **O Requisito de "30 hosts":** Este é um ponto-chave que causa confusão. O requisito de que "as sub-redes e1 e e2 devem ter capacidade para endereçar ao menos 30 hosts em cada uma", se refere ao **tamanho do espaço de endereçamento IP**, e não à quantidade de portas físicas em um único aparelho.
-   - O seu plano de usar uma máscara `/27` (que permite 30 IPs úteis) atende perfeitamente a esse requisito.
-   - Em uma rede real, para conectar esses 30 hosts, você usaria um ou mais switches de 24 portas ligados entre si, e esse conjunto de switches se conectaria a uma única porta do seu roteador `e1`.
-   - **Para o seu projeto no Packet Tracer, usar um único switch e 2 hosts (`H1`, `H2`) para representar essa rede local é uma simplificação perfeitamente aceitável e correta.**
-
-### Sub-redes dos Roteadores de Agregação
-
-- **No Plano de Endereçamento:** Ao usar o VLSM e um bloco grande como `192.168.0.0/24`, você deixou muito espaço de IPs livres. Há centenas de sub-redes disponíveis para serem usadas no futuro, então seu plano de IPs é escalável.
-
-- **Na Escolha do Hardware:** O roteador `2911` é um equipamento **modular**. Isso significa que, no mundo real, você poderia comprar e instalar novos "módulos de interface" (chamados HWICs) para adicionar mais portas a ele conforme a necessidade. Você não precisa fazer isso no Packet Tracer, mas pode (e deve) mencionar essa característica no seu relatório.
-
-**Como Documentar Isso no Relatório:**
-
-> "Para os roteadores de agregação:
-> `a1` e `a2`, foi escolhido o modelo modular Cisco 2911. Embora na implementação atual apenas 3 portas sejam utilizadas em cada um, este modelo suporta a adição de novos módulos de interface, garantindo a escalabilidade futura para suportar as 6 sub-redes ou mais, conforme solicitado nos requisitos do projeto
->
-> O plano de endereçamento IP também foi projetado com ampla capacidade para acomodar essas futuras sub-redes."
-
----
 
 ## Tabelas de Roteamento Estático
 
@@ -162,14 +132,6 @@ Para as redes com 4 endereços, continuando do ultimo endereço disponível que 
 | 192.168.0.96  | 255.255.255.224 | 192.168.0.134 | LAN de E4 (via A2)  |
 | 192.168.0.144 | 255.255.255.252 | 192.168.0.134 | Link A2-E3 (via A2) |
 | 192.168.0.148 | 255.255.255.252 | 192.168.0.134 | Link A2-E4 (via A2) |
-
----
-
-## Documentação
-
-**EXPLICAR MELHOR CADA PARTE DESDE O PADRÃO ATÉ A CAPACIDADE E SEUS USOS**
-
----
 
 ## Dispositivos
 
